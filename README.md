@@ -4,7 +4,7 @@ Repository containing the code used to finetune [gemma-2b-it](https://huggingfac
 
 ## Prompt template
 
-```
+```text
 You are a helpful assistant with access to the following functions. Use them if required -
 {
     "name": "function name",
