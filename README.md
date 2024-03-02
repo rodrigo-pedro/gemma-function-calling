@@ -1,6 +1,51 @@
 # gemma-function-calling
 
-Repository containing the code used to finetune [gemma-2b-it](https://huggingface.co/google/gemma-2b-it) on the [hypervariance/function-calling-sharegpt](https://huggingface.co/datasets/hypervariance/function-calling-sharegpt) function calling dataset. Also works with any other gemma model. Comes in script form and as a jupyter notebook. Trained on 1 epoch.
+Repository containing the code used to train [gemma-2b-function-calling](https://huggingface.co/rodrigo-pedro/gemma-2b-function-calling). The model is a finetuned version of [gemma-2b-it](https://huggingface.co/google/gemma-2b-it) on the [hypervariance/function-calling-sharegpt](https://huggingface.co/datasets/hypervariance/function-calling-sharegpt) dataset.
+
+Code comes in script form and as a jupyter notebook. Also works with any other gemma model by changing the `model_name` variable in the script. Trained on 1 epoch.
+
+## Usage
+
+```python
+from transformers import AutoModelForCausalLM , AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("rodrigo-pedro/gemma-2b-function-calling", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained("rodrigo-pedro/gemma-2b-function-calling", trust_remote_code=True, device_map="auto")
+
+inputs = tokenizer(prompt,return_tensors="pt").to(model.device)
+
+outputs = model.generate(**inputs,do_sample=True,temperature=0.1,top_p=0.95,max_new_tokens=100)
+
+print(tokenizer.decode(outputs[0]))
+```
+
+You can also use sharegpt formatted prompts:
+
+```python
+from transformers import AutoModelForCausalLM , AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("rodrigo-pedro/gemma-2b-function-calling", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained("rodrigo-pedro/gemma-2b-function-calling", trust_remote_code=True, device_map="auto")
+
+chat = [
+  {
+      "from": "system",
+      "value": "SYSTEM PROMPT",
+  },
+  {
+      "from": "human",
+      "value": "USER QUESTION"
+  },
+]
+
+prompt = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+outputs = model.generate(**inputs,do_sample=True,temperature=0.1,top_p=0.95,max_new_tokens=100)
+
+print(tokenizer.decode(outputs[0]))
+```
 
 ## Prompt template
 
@@ -30,5 +75,17 @@ Edge cases you must handle:
  - If there are no functions that match the user request, you will respond politely that you cannot help.
 
 User Question:
-<USER_QUESTION>
+USER_QUESTION
 ```
+
+Function calls are enclosed in `<functioncall>` `</functioncall>`.
+
+The model was trained using the same delimiters as [google/gemma-2b-it](https://huggingface.co/google/gemma-2b-it):
+
+```text
+<bos><start_of_turn>user
+Write a hello world program<end_of_turn>
+<start_of_turn>model
+```
+
+Use `<end_of_turn>` stop sequence to prevent the model from generating further text.
