@@ -126,3 +126,6 @@ trainer = SFTTrainer(
     args=training_args,
     packing=True,
 )
+
+trainer.train()
+trainer.save_model("gemma-2b-function-calling")
