@@ -4,6 +4,12 @@ Repository containing the code used to train [gemma-2b-function-calling](https:/
 
 Code comes in script form and as a jupyter notebook. Also works with any other gemma model by changing the `model_name` variable in the script. Trained on 1 epoch.
 
+## IMPORTANT - Requesting access
+
+Before you can use the model, you must first to request access to the Gemma models in Hugging Face. You can do this by going to the [gemma-2b-it](https://huggingface.co/google/gemma-2b-it) model page and requesting access there.
+
+Once you have access to the model, remember to authenticate with Hugging Face as described in this [guide](https://huggingface.co/docs/huggingface_hub/en/quick-start#authentication).
+
 ## Usage
 
 ```python
