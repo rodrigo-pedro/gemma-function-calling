@@ -12,6 +12,8 @@ Once you have access to the model, remember to authenticate with Hugging Face as
 
 ## Usage
 
+Make sure you have the `peft` package installed. You can install it with `pip install peft`.
+
 ```python
 from transformers import AutoModelForCausalLM , AutoTokenizer
 
